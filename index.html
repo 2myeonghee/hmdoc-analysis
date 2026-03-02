@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>헬미닥 (HelpMeDoc) 서비스 분석 보고서</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    line-height: 1.75;
+    color: #111;
+    background: #fff;
+    padding: 60px 80px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* ── 제목 ── */
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .meta {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 48px;
+  }
+
+  /* ── 섹션 제목 ── */
+  h2 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 40px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid #111;
+  }
+  h3 {
+    font-size: 13.5px;
+    font-weight: 700;
+    margin: 24px 0 10px;
+  }
+
+  /* ── 표 공통 ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 20px;
+    font-size: 13px;
+  }
+  th {
+    background: #f0f0f0;
+    color: #111;
+    font-weight: 700;
+    text-align: left;
+    padding: 9px 14px;
+    border-top: 1.5px solid #111;
+    border-bottom: 1.5px solid #111;
+  }
+  td {
+    background: #fff;
+    padding: 8px 14px;
+    vertical-align: top;
+    border: none;
+  }
+  /* 마지막 행 아래 선 */
+  tr:last-child td {
+    border-bottom: 1px solid #d0d0d0;
+  }
+
+  /* ── 열 너비 ── */
+  .col-label { width: 160px; }
+  .col-2col   { width: 50%; }
+  .col-category { width: 130px; }
+  .col-rating { width: 100px; }
+  .col-status { width: 100px; }
+
+  /* ── 강조 ── */
+  strong { font-weight: 700; }
+  u { text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ── 주석 박스 ── */
+  .note {
+    background: #f8f8f8;
+    border-left: 3px solid #bbb;
+    padding: 10px 16px;
+    font-size: 12.5px;
+    margin: 12px 0 20px;
+    line-height: 1.65;
+  }
+
+  /* ── 투자/협업 결론 박스 ── */
+  .verdict {
+    border: 1.5px solid #111;
+    padding: 18px 22px;
+    margin: 16px 0 24px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .verdict-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  p { margin-bottom: 10px; }
+  ul { margin: 6px 0 12px 20px; }
+  li { margin-bottom: 4px; }
+
+  /* ── 페이지 구분 ── */
+  .section-gap { margin-top: 56px; }
+
+  /* ── 기술 등급 바 ── */
+  .rating-wrap { display: flex; align-items: center; gap: 8px; }
+  .rating-bar-bg {
+    flex: 1; height: 8px; background: #e8e8e8; border-radius: 4px; overflow: hidden;
+  }
+  .rating-bar { height: 100%; background: #111; border-radius: 4px; }
+  .rating-label { font-size: 11.5px; white-space: nowrap; min-width: 56px; text-align: right; }
+
+  /* ── 리스크 수준 배지 ── */
+  .risk-hi  { font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+  .risk-mid { font-weight: 700; }
+  .risk-lo  { }
+
+  /* ── 경고 박스 ── */
+  .warn {
+    border: 1.5px solid #111;
+    border-left: 4px solid #111;
+    padding: 12px 18px;
+    font-size: 13px;
+    margin: 14px 0 22px;
+    line-height: 1.75;
+  }
+  .warn-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<h1>헬미닥 (HelpMeDoc) 서비스 분석 보고서</h1>
+<div class="meta">작성일: 2026-03-02 &nbsp;|&nbsp; 분석 방법: 브라우저 직접 접속, 소스코드 파싱, 서버 헤더 분석, 앱 스토어 크롤링, whois 조회</div>
+
+
+<!-- ══════════════════════════════════════════
+     1. 기업 기본 정보
+══════════════════════════════════════════ -->
+<h2>1. 기업 기본 정보</h2>
+
+<table>
+  <colgroup>
+    <col class="col-label">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th>내용</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>법인명</td><td>(주)헬미닥</td></tr>
+    <tr><td>서비스명</td><td>HelpMeDoc (hmdoc)</td></tr>
+    <tr><td>등록 주소</td><td>서울특별시 송파구 올림픽로 435 (whois 기준)</td></tr>
+    <tr><td>실제 주소</td><td>서울특별시 강남구 논현로132길 13, 4층 4553호 (플레이스토어 기준)</td></tr>
+    <tr><td>대표 연락처</td><td>+82 10-9149-2059</td></tr>
+    <tr><td>고객센터</td><td>helpmedockr2@gmail.com (Gmail 사용)</td></tr>
+    <tr><td>DNS 호스팅</td><td>Cafe24</td></tr>
+    <tr><td>앱 패키지</td><td>com.hmdoctor</td></tr>
+    <tr><td>앱 다운로드</td><td><strong>100+</strong> (극초기 단계)</td></tr>
+    <tr><td>최신 버전</td><td>1.9.1 (ver 59) — 2026년 1월 22일 업데이트, QR 기능 추가</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  📌 <strong>주소 불일치 주의:</strong> whois 등록 주소(송파구)와 플레이스토어 등록 주소(강남구)가 상이함. 법인 등기 원본 확인 필요. Gmail 고객센터 사용은 스타트업 초기 단계의 특징으로, 아직 기업 이메일 인프라 미구축 상태.
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     2. 도메인 구조
+══════════════════════════════════════════ -->
+<h2>2. 도메인 및 서비스 구조</h2>
+
+<table>
+  <colgroup>
+    <col style="width:220px">
+    <col style="width:110px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>도메인</th>
+      <th>역할</th>
+      <th>비고</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>land.hmdoc.kr</td><td>랜딩페이지</td><td>서비스 소개, 앱 다운로드 유도</td></tr>
+    <tr><td>chat.hmdoc.kr</td><td>환자용 AI챗 (신)</td><td>FastAPI 백엔드, 주 서비스 진입점</td></tr>
+    <tr><td>grad.hmdoc.kr</td><td>환자용 AI챗 (구)</td><td>chat.hmdoc.kr과 동일 시스템</td></tr>
+    <tr><td>www.hmdoc.kr</td><td>의사 상담 플랫폼</td><td>CodeIgniter 기반, <u>완전히 별도 시스템</u></td></tr>
+    <tr><td>helpmedoc.kr</td><td>구 도메인</td><td>현재 리다이렉트 처리</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  📌 <strong>이중 플랫폼 구조:</strong> 환자용 AI챗(chat/grad)과 의사 상담 플랫폼(www)은 프레임워크·아키텍처가 완전히 다른 두 개의 독립 시스템. 의사-환자 <strong>양면시장(Two-sided Market)</strong> 구축을 시도하고 있으나, 두 시스템 간 실질적 연동 여부는 미확인.
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     3. 기술 스택
+══════════════════════════════════════════ -->
+<h2>3. 기술 스택 분석</h2>
+
+<table>
+  <colgroup>
+    <col class="col-label">
+    <col style="width:180px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>레이어</th>
+      <th>기술</th>
+      <th>확인 방법</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>웹 서버</td><td>nginx 1.18.0 (Ubuntu)</td><td>HTTP 응답 헤더 직접 확인</td></tr>
+    <tr><td>백엔드</td><td>FastAPI (Python)</td><td>엔드포인트 패턴, OpenAPI 스키마 추론</td></tr>
+    <tr><td>프론트엔드</td><td>jQuery 1.11.1 + 3.4.1 혼용</td><td>HTML 소스 직접 파싱</td></tr>
+    <tr><td>인증</td><td>XSRF 토큰 세션 방식</td><td>쿠키 및 요청 헤더 분석</td></tr>
+    <tr><td>레이트리밋</td><td>600 req / window</td><td>429 응답 헤더 확인</td></tr>
+    <tr><td>DNS / 호스팅</td><td>Cafe24</td><td>whois 네임서버 확인</td></tr>
+    <tr><td>모바일 앱</td><td>Android (com.hmdoctor)</td><td>플레이스토어 직접 크롤링</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  📌 jQuery 1.11.1(2014년)과 3.4.1을 동시에 사용하는 것은 레거시 코드와 신규 코드가 혼재한다는 신호. 자체 GPU 서버나 고가용 클라우드 인프라는 없는 것으로 판단 (Cafe24 수준).
+</div>
+
+<h3>3-1. 기술 수준 항목별 평가</h3>
+
+<table>
+  <colgroup>
+    <col style="width:160px">
+    <col style="width:220px">
+    <col style="width:200px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>평가 영역</th>
+      <th>수준</th>
+      <th>관찰 근거</th>
+      <th>한계 / 리스크</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>프론트엔드</strong></td>
+      <td>
+        <div class="rating-wrap">
+          <div class="rating-bar-bg"><div class="rating-bar" style="width:28%"></div></div>
+          <span class="rating-label">하 (초급)</span>
+        </div>
+      </td>
+      <td>jQuery 1.11.1 + 3.4.1 혼용, SPA 아닌 서버사이드 렌더링 추정</td>
+      <td>React·Vue 등 현대 프레임워크 미도입. 컴포넌트 재사용·상태관리 어려움. 모바일 UX 확장 한계.</td>
+    </tr>
+    <tr>
+      <td><strong>백엔드 아키텍처</strong></td>
+      <td>
+        <div class="rating-wrap">
+          <div class="rating-bar-bg"><div class="rating-bar" style="width:52%"></div></div>
+          <span class="rating-label">중 (중급)</span>
+        </div>
+      </td>
+      <td>FastAPI(Python) — 현대적 비동기 프레임워크, OpenAPI 자동 문서화, 타입 힌트 지원</td>
+      <td>단일 서버(모놀리스) 추정. 트래픽 증가 시 수평 확장 구조 미확인. CodeIgniter 구 플랫폼과 분열.</td>
+    </tr>
+    <tr>
+      <td><strong>보안</strong></td>
+      <td>
+        <div class="rating-wrap">
+          <div class="rating-bar-bg"><div class="rating-bar" style="width:36%"></div></div>
+          <span class="rating-label">하-중</span>
+        </div>
+      </td>
+      <td>XSRF 토큰 기반 세션 인증, 레이트리밋(600 req/window) 적용</td>
+      <td>nginx 1.18.0 — <u>2020년 릴리스, 2026년 기준 보안 패치 최신 여부 미확인</u>. HTTPS 적용 여부 외 WAF·침입탐지 미확인. 건강정보 암호화 수준 외부 확인 불가.</td>
+    </tr>
+    <tr>
+      <td><strong>인프라·확장성</strong></td>
+      <td>
+        <div class="rating-wrap">
+          <div class="rating-bar-bg"><div class="rating-bar" style="width:20%"></div></div>
+          <span class="rating-label">하</span>
+        </div>
+      </td>
+      <td>Cafe24 DNS 기반 — 소규모 운영 수준</td>
+      <td>AWS·GCP·Azure 등 전문 클라우드 미사용 추정. Auto-scaling·CDN·분산 DB 없을 가능성 높음. 사용자 급증 시 서비스 장애 위험.</td>
+    </tr>
+    <tr>
+      <td><strong>AI 파이프라인</strong></td>
+      <td>
+        <div class="rating-wrap">
+          <div class="rating-bar-bg"><div class="rating-bar" style="width:44%"></div></div>
+          <span class="rating-label">중 (조합형)</span>
+        </div>
+      </td>
+      <td>OpenAI API 호출 + 마이데이터 RAG 구성 추정 — 현 시점 빠른 구현의 표준 방식</td>
+      <td>자체 모델 없음. OpenAI 정책 변경·가격 인상에 종속. 의료 특화 파인튜닝 없어 환각(hallucination) 리스크 내재. 모델 응답 품질 외부 검증 불가.</td>
+    </tr>
+    <tr>
+      <td><strong>데이터 파이프라인</strong></td>
+      <td>
+        <div class="rating-wrap">
+          <div class="rating-bar-bg"><div class="rating-bar" style="width:55%"></div></div>
+          <span class="rating-label">중 (차별화)</span>
+        </div>
+      </td>
+      <td>건강보험공단 마이데이터 연동 — 실제 의료 데이터 수집 구현. CODEF 실명인증 연동.</td>
+      <td>수집 데이터의 정합성·정규화 품질 미확인. 데이터 보관 정책·삭제 절차 공개 없음.</td>
+    </tr>
+    <tr>
+      <td><strong>개발 프로세스</strong></td>
+      <td>
+        <div class="rating-wrap">
+          <div class="rating-bar-bg"><div class="rating-bar" style="width:25%"></div></div>
+          <span class="rating-label">하</span>
+        </div>
+      </td>
+      <td>앱 ver 59 = 약 60회 배포 (업데이트 주기는 활발)</td>
+      <td>CI/CD·자동화 테스트·스테이징 환경 여부 미확인. 두 개의 독립 시스템을 소수 인원이 동시 운영 중인 것으로 추정 — 운영 부담 큼.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>3-2. 기술 수준 종합 판단</h3>
+
+<div class="verdict">
+  <div class="verdict-title">기술 수준 종합 — MVP 후기 ~ 초기 성장 단계 (Early Growth)</div>
+  헬미닥의 기술 스택은 <strong>빠른 출시를 최우선으로 한 MVP 구성</strong>이다. FastAPI 선택과 마이데이터 연동 구현은 올바른 방향이나, 프론트엔드 레거시·단일 인프라·이중 시스템 분절이 발목을 잡는다.<br><br>
+  핵심 위험은 두 가지다. 첫째, <u>의료 데이터(민감정보)를 Cafe24 수준 인프라에서 처리</u>하는 것은 보안 감사 시 즉각 지적받을 수준이다. 둘째, <u>OpenAI API 단순 호출에 의존하는 AI 파이프라인</u>은 의료 환각(Hallucination) 발생 시 법적·신뢰 리스크가 크다. 이 두 가지가 해소되지 않으면 병원 B2B 계약 및 시리즈A 투자 유치가 실질적으로 어렵다.
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     4. 외부 연동
+══════════════════════════════════════════ -->
+<h2>4. 외부 서비스 연동</h2>
+
+<table>
+  <colgroup>
+    <col style="width:200px">
+    <col style="width:150px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>연동 서비스</th>
+      <th>용도</th>
+      <th>의미</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>CODEF API</td><td>주민등록번호 실명인증</td><td>금융결제원 수준의 본인확인 — 보험청구 등 법적 효력 필요 기능 예고</td></tr>
+    <tr><td>카카오톡 간편인증</td><td>로그인 / 본인인증</td><td>국내 사용자 UX 최적화, 진입장벽 최소화</td></tr>
+    <tr><td>건강보험공단 마이데이터</td><td>진료기록·처방약·건강검진 수집</td><td><u>핵심 경쟁력</u> — 개인화된 AI 진료 준비 가능</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ══════════════════════════════════════════
+     5. AI 모델 추론
+══════════════════════════════════════════ -->
+<h2>5. AI 모델 추론</h2>
+
+<p>소스코드에 AI 모델명이 직접 노출되지 않음 (백엔드에서 처리). 아래는 기술 스택·서비스 플로우·인프라 수준을 종합한 정황 추론.</p>
+
+<table>
+  <colgroup>
+    <col style="width:180px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>추론 항목</th>
+      <th>내용</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>기반 모델 (추정)</td><td><strong>GPT-4 / GPT-4o</strong> (OpenAI API 호출 방식)</td></tr>
+    <tr><td>파이프라인</td><td>마이데이터 설문 결과 → RAG 구성 → 의료 특화 시스템 프롬프트 주입 → GPT 호출</td></tr>
+    <tr><td>자체 학습 여부</td><td>없음 (파인튜닝 흔적 없음, 인프라 수준 불가)</td></tr>
+    <tr><td>추론 근거</td><td>FastAPI + Cafe24 DNS 조합으로 자체 모델 서빙 불가. 국내 의료 AI 스타트업의 표준 아키텍처(OpenAI API + RAG)와 일치.</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ══════════════════════════════════════════
+     6. 서비스 플로우
+══════════════════════════════════════════ -->
+<h2>6. 핵심 서비스 플로우</h2>
+
+<table>
+  <colgroup>
+    <col style="width:60px">
+    <col style="width:160px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>단계</th>
+      <th>액션</th>
+      <th>설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>①</td><td>회원가입</td><td>카카오 간편인증 또는 이메일 + CODEF 실명인증</td></tr>
+    <tr><td>②</td><td>마이데이터 연동</td><td>건강보험공단 API로 진료기록·처방약·건강검진 자동 수집</td></tr>
+    <tr><td>③</td><td>증상 입력 / AI챗</td><td>사용자가 증상 입력 → AI가 마이데이터 기반으로 개인화 분석</td></tr>
+    <tr><td>④</td><td>진료과 추천</td><td>증상 분석 결과를 바탕으로 적합 진료과·병원 추천</td></tr>
+    <tr><td>⑤</td><td>QR 병원 전송</td><td>AI 분석 결과를 QR코드로 생성 → 병원 접수 시 의사에게 전달 (B2B 브릿지)</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  📌 QR 전송 기능은 2026년 1월에 추가된 신기능으로, 환자→의사 정보 전달 루프를 완성하는 핵심 요소. 이것이 양면시장 구조(환자 앱 + 의사 플랫폼)의 연결 고리로 기능할 가능성 있음.
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     7. 강점 / 약점
+══════════════════════════════════════════ -->
+<h2>7. 강점 및 약점 분석</h2>
+
+<table>
+  <colgroup>
+    <col class="col-2col">
+    <col class="col-2col">
+  </colgroup>
+  <thead>
+    <tr>
+      <th>강점 (Strengths)</th>
+      <th>약점 (Weaknesses)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <strong>① 마이데이터 연동</strong><br>
+        진료기록·처방약·건강검진을 자동 수집, 경쟁 서비스 대비 개인화 깊이 우위
+      </td>
+      <td>
+        <strong>① 극초기 사용자 수</strong><br>
+        앱 다운로드 100+ 수준 — 서비스 시장 검증 미완료
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>② QR 병원 전송</strong><br>
+        환자→의사 정보 전달 브릿지, B2B 병원 채널 확장 가능성
+      </td>
+      <td>
+        <strong>② 레거시 프론트엔드</strong><br>
+        jQuery 1.11.1 혼용 — 유지보수 부채, 기술적 신뢰도 저하
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>③ 닥터프렌즈 협력</strong><br>
+        구독자 180만+ 의학 유튜버를 통한 신뢰 기반 마케팅
+      </td>
+      <td>
+        <strong>③ 창업자/팀 정보 비공개</strong><br>
+        스텔스 운영, 대표자 신원 미확인 → 신뢰 구축 장벽
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>④ 양면시장 설계</strong><br>
+        환자 앱 + 의사 플랫폼 동시 구축 시도
+      </td>
+      <td>
+        <strong>④ Gmail 고객센터</strong><br>
+        기업 이메일 미사용 — 초기 단계 신호, 기업 신뢰도 취약
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>⑤ 카카오 인증 통합</strong><br>
+        국내 UX 표준에 최적화된 진입장벽 최소화
+      </td>
+      <td>
+        <strong>⑤ 두 시스템 분절</strong><br>
+        환자 앱(FastAPI)↔의사 플랫폼(CodeIgniter) 연동 미확인
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- ══════════════════════════════════════════
+     8. 협업 / 투자 가능성 평가
+══════════════════════════════════════════ -->
+<h2 class="section-gap">8. 협업 및 투자 가능성 평가</h2>
+
+<h3>8-1. 협업 가능성</h3>
+
+<table>
+  <colgroup>
+    <col style="width:160px">
+    <col style="width:110px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>협업 형태</th>
+      <th>가능성</th>
+      <th>구체적 시나리오</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>B2B 병원 연계</td>
+      <td><strong>높음</strong></td>
+      <td>QR 전송 기능을 병원 EMR(전자의무기록)과 연동하면 접수 프로세스 자동화 가능. 병원 측 ROI 명확.</td>
+    </tr>
+    <tr>
+      <td>보험사 / 헬스케어 플랫폼</td>
+      <td><strong>중간</strong></td>
+      <td>마이데이터 기반 건강 리포트 → 보험 언더라이팅 데이터로 활용 가능. 규제 이슈 선결 필요.</td>
+    </tr>
+    <tr>
+      <td>의료기기 / 웨어러블</td>
+      <td><strong>중간</strong></td>
+      <td>갤럭시워치·애플워치 활동 데이터 + 마이데이터 결합으로 예방 의학 서비스 확장 가능.</td>
+    </tr>
+    <tr>
+      <td>제약사 / 건강기능식품</td>
+      <td><strong>낮음</strong></td>
+      <td>처방약 데이터 기반 맞춤 건기식 추천은 개인정보보호법상 민감정보 처리 동의 이슈 존재.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>8-2. 투자 가능성</h3>
+
+<table>
+  <colgroup>
+    <col style="width:160px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>평가 기준</th>
+      <th>현황 및 판단</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>시장 타이밍</td>
+      <td>의료 AI 마이데이터 개방 초기(2023~2025) 진입 — <strong>타이밍은 좋음</strong></td>
+    </tr>
+    <tr>
+      <td>기술 차별성</td>
+      <td>마이데이터 + QR B2B 브릿지 조합은 국내 경쟁사 대비 차별화 포인트 존재. <u>단, 복제 장벽 낮음.</u></td>
+    </tr>
+    <tr>
+      <td>성장 지표</td>
+      <td>앱 다운로드 100+ — <strong>아직 PMF(Product-Market Fit) 미검증 단계</strong>. 투자 유치 시 데이터 부족.</td>
+    </tr>
+    <tr>
+      <td>팀 투명성</td>
+      <td>창업자·대표 공개 정보 없음. VC 투자 심사 시 <u>핵심 리스크</u>로 작용 가능.</td>
+    </tr>
+    <tr>
+      <td>기술 부채</td>
+      <td>jQuery 레거시, 이중 시스템 분절 — 스케일업 전 리아키텍처 투자 필요.</td>
+    </tr>
+    <tr>
+      <td>규제 리스크</td>
+      <td>의료법 제27조(무면허 의료행위 금지), 개인정보보호법 민감정보 처리 — <strong>법적 경계선 지속 모니터링 필요</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="verdict">
+  <div class="verdict-title">종합 의견 — 협업·투자 판단</div>
+  현 시점 헬미닥은 <strong>아이디어와 방향성은 유효하나, 실행 초기 단계</strong>에 있다. 앱 다운로드 100+ 수준에서 투자·협업을 논하기엔 트랙션이 부족하다.<br><br>
+  가장 현실적인 접근은 <u>B2B 병원 파일럿 협업</u>이다. QR 전송 기능을 1~2개 병원과 POC(개념 검증) 형태로 연동해 사용 데이터를 만들면, 이후 투자 유치 및 대형 파트너십 협상력이 급격히 올라간다. 반대로 현 상태로 VC 투자를 받으려면 창업자 신원 공개와 월간 활성 사용자(MAU) 최소 1,000명 이상의 지표 확보가 선행되어야 한다.
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     9. 의료법 및 규제 리스크
+══════════════════════════════════════════ -->
+<h2>9. 의료법 및 규제 리스크 분석</h2>
+
+<h3>9-1. 법조항별 위험 매트릭스</h3>
+
+<table>
+  <colgroup>
+    <col style="width:180px">
+    <col style="width:95px">
+    <col style="width:95px">
+    <col style="width:200px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>법조항</th>
+      <th>위험 수준</th>
+      <th>헬미닥 해당 여부</th>
+      <th>핵심 쟁점</th>
+      <th>현재 대응 추정</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>의료법 제27조</strong><br><span style="font-size:11.5px">무면허 의료행위 금지</span></td>
+      <td><span class="risk-hi">최고</span></td>
+      <td>잠재적 해당</td>
+      <td>AI의 "증상 분석·진료과 추천"이 진단 행위에 해당하는지. 판례상 진단 = 증상을 종합해 질병명을 특정하는 행위.</td>
+      <td>"진료 준비 가이드"로 표현 변경. "의료 행위 아님" 면책 문구 삽입 추정.</td>
+    </tr>
+    <tr>
+      <td><strong>의료기기법 제2조</strong><br><span style="font-size:11.5px">AI 의료 소프트웨어 허가</span></td>
+      <td><span class="risk-hi">높음</span></td>
+      <td>해당 가능성 높음</td>
+      <td>2020년 개정 의료기기법으로 AI 진단보조 소프트웨어(SaMD)는 원칙적으로 식약처 허가 대상. "증상→질환 분류" 기능이 명확하면 2~3등급 의료기기.</td>
+      <td>허가 없이 운영 중인 것으로 추정. "건강정보 제공"으로 프레이밍하여 의료기기 해당 회피 시도.</td>
+    </tr>
+    <tr>
+      <td><strong>개인정보보호법 제23조</strong><br><span style="font-size:11.5px">민감정보 처리 제한</span></td>
+      <td><span class="risk-hi">높음</span></td>
+      <td><u>확실히 해당</u></td>
+      <td>진료기록·처방약·건강검진은 모두 민감정보. 별도 동의서, 암호화, 접근 권한 제한 의무. 위반 시 5년 이하 징역 또는 5,000만 원 이하 벌금.</td>
+      <td>마이데이터 연동 동의 절차는 존재. 암호화·접근제한 실제 이행 수준 외부 확인 불가.</td>
+    </tr>
+    <tr>
+      <td><strong>의료법 제21조</strong><br><span style="font-size:11.5px">진료기록 열람·제공 제한</span></td>
+      <td><span class="risk-mid">중간</span></td>
+      <td>잠재적 해당</td>
+      <td>QR 코드로 의사에게 전달되는 정보가 진료기록 원본 또는 그 요약본이라면, 환자 동의 외 의료기관 간 전송에 관한 별도 규정 준수 필요.</td>
+      <td>QR 전송이 "환자 본인이 스스로 전달"하는 구조라면 제21조 적용 예외 가능. 구체적 법리는 해석 여지 존재.</td>
+    </tr>
+    <tr>
+      <td><strong>약사법 제50조</strong><br><span style="font-size:11.5px">의약품 정보 제공 제한</span></td>
+      <td><span class="risk-mid">중간</span></td>
+      <td>조건부 해당</td>
+      <td>처방약 복약 정보 안내가 "의약품 효능·효과 광고" 또는 "복약지도" 행위에 해당하는지. 약사법상 복약지도는 약사 면허 필요.</td>
+      <td>"정보 안내" 수준으로 제한하고 구체적 복약 지시 회피 추정.</td>
+    </tr>
+    <tr>
+      <td><strong>의료법 제56조</strong><br><span style="font-size:11.5px">의료광고 심의·제한</span></td>
+      <td><span class="risk-lo">낮음</span></td>
+      <td>일부 해당 가능</td>
+      <td>"AI 진단", "정확한 건강 분석" 등 과장 문구 사용 시 의료광고 규제 저촉. 심의 미필 광고 과태료.</td>
+      <td>"진료 준비", "가이드" 용어로 제한적 표현 중. 직접적 치료 효과 주장 없으면 저위험.</td>
+    </tr>
+    <tr>
+      <td><strong>보건의료 데이터 활용 가이드라인</strong><br><span style="font-size:11.5px">(보건복지부, 2023)</span></td>
+      <td><span class="risk-mid">중간</span></td>
+      <td>해당</td>
+      <td>의료 데이터의 AI 학습 목적 활용 시 IRB(임상연구심의) 또는 데이터 활용 신청 절차 필요. 마이데이터 수집 데이터를 AI 학습에 사용하는지 여부가 핵심.</td>
+      <td>서비스 내 명시 없음. 개인정보 처리방침 확인 필요.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>9-2. 규제 기관별 제재 시나리오</h3>
+
+<table>
+  <colgroup>
+    <col style="width:130px">
+    <col style="width:160px">
+    <col style="width:200px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>규제 기관</th>
+      <th>관련 법령</th>
+      <th>제재 수단</th>
+      <th>발동 트리거</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>보건복지부</td>
+      <td>의료법 제27조</td>
+      <td>서비스 중지 명령, 고발 (5년 이하 징역)</td>
+      <td>AI 응답에서 구체적 질병명 진단 또는 치료 방법 제시 민원 접수 시</td>
+    </tr>
+    <tr>
+      <td>식품의약품안전처</td>
+      <td>의료기기법</td>
+      <td>허가 없는 의료기기 제조·판매 금지 명령, 과태료 최대 1억 원</td>
+      <td>경쟁사 신고 또는 언론 보도로 식약처 직권 조사 개시 시</td>
+    </tr>
+    <tr>
+      <td>개인정보보호위원회</td>
+      <td>개인정보보호법 제23조</td>
+      <td>과징금 (매출액의 3%), 과태료, 시정명령</td>
+      <td>데이터 유출 사고 또는 민감정보 무단 제3자 제공 신고 시</td>
+    </tr>
+    <tr>
+      <td>공정거래위원회</td>
+      <td>표시광고법</td>
+      <td>시정명령, 과태료</td>
+      <td>"AI 정확도", "전문 의사 수준" 등 입증 안 된 광고 문구 민원 시</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>9-3. 유사 서비스 규제 선례</h3>
+
+<table>
+  <colgroup>
+    <col style="width:140px">
+    <col style="width:160px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>서비스</th>
+      <th>규제 결과</th>
+      <th>헬미닥에 주는 시사점</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>굿닥 / 똑닥</td>
+      <td>규제 통과 (예약 플랫폼으로 한정)</td>
+      <td>직접 진단 기능 없이 예약·접수 보조로 포지셔닝하면 의료법 저촉 회피 가능</td>
+    </tr>
+    <tr>
+      <td>닥터나우</td>
+      <td>비대면 진료 허용 범위 내 운영</td>
+      <td>실제 의사가 최종 진단하는 구조를 유지하면 플랫폼 사업자는 의료법 직접 적용 회피 가능</td>
+    </tr>
+    <tr>
+      <td>국내 A사 AI 피부 진단 앱</td>
+      <td>식약처 경고 후 "진단" → "분석" 표현 변경 권고</td>
+      <td><u>용어 하나가 규제 경계를 가른다.</u> "진단" 대신 "분석·가이드·준비" 유지 필수</td>
+    </tr>
+    <tr>
+      <td>해외 Ada Health (독일)</td>
+      <td>유럽 CE 인증(의료기기) 취득 후 적법 운영</td>
+      <td>장기적으로 식약처 SaMD 허가 취득이 B2B 병원 계약의 전제조건이 될 가능성 높음</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="warn">
+  <div class="warn-title">⚠ 핵심 규제 레드라인 — 반드시 확인해야 할 3가지</div>
+  <strong>① AI 응답 내 질병명 특정 여부</strong><br>
+  "이 증상은 위염일 수 있습니다"처럼 구체적 질병명을 언급하는 순간 의료법 제27조(무면허 의료행위)의 진단 행위 경계에 진입한다. 현재 서비스가 어느 수준까지 특정하는지 직접 테스트 필수.<br><br>
+  <strong>② 마이데이터의 AI 학습 목적 사용 여부</strong><br>
+  개인 건강정보를 AI 모델 학습(파인튜닝 포함)에 사용한다면 개인정보보호법상 별도 동의 + IRB 심의가 필요하다. 개인정보 처리방침에 "서비스 개선" 등 포괄적 목적으로만 명시된 경우 위반 소지 있음.<br><br>
+  <strong>③ 식약처 SaMD(AI 의료 소프트웨어) 해당 여부</strong><br>
+  헬미닥의 핵심 기능(증상 입력 → 진료과 추천)이 "의료적 목적의 소프트웨어"로 판단되면 식약처 의료기기 허가 없이는 운영 자체가 불법이다. 현재 허가 없이 운영 중인 것으로 추정되며, <u>이것이 서비스 존폐를 가를 가장 큰 단일 리스크</u>다.
+</div>
+
+<h3>9-4. 현재 헬미닥의 규제 회피 전략 추정</h3>
+
+<table>
+  <colgroup>
+    <col style="width:200px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>전략</th>
+      <th>내용 및 평가</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>용어 프레이밍</strong></td>
+      <td>"진료 준비", "AI 건강 가이드", "정보 제공"으로 표현 — 직접 진단·치료 표현 회피. 현재 가장 일반적인 법적 완충 전략.</td>
+    </tr>
+    <tr>
+      <td><strong>면책 문구</strong></td>
+      <td>서비스 내 "본 서비스는 의료 행위가 아니며 전문 의사의 진료를 대체하지 않습니다" 류의 고지 삽입 추정.</td>
+    </tr>
+    <tr>
+      <td><strong>의사 최종 판단 구조</strong></td>
+      <td>QR 전송으로 AI 결과를 의사에게 전달 → 최종 판단은 의사가 수행. AI는 "환자 준비 보조" 역할로 한정.</td>
+    </tr>
+    <tr>
+      <td><strong>전략 평가</strong></td>
+      <td>단기 운영에는 효과적이나, <u>식약처 SaMD 조사 앞에서는 면책 문구만으로 불충분</u>하다. 기능적 사실(증상→질환 분류)이 법적 판단의 기준이 되기 때문. 서비스 성장과 함께 규제 노출 위험은 비례 증가한다.</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- ══════════════════════════════════════════
+     10. 미확인 사항 및 차기 과제
+══════════════════════════════════════════ -->
+<h2>10. 미확인 사항 및 차기 조사 과제</h2>
+
+<table>
+  <colgroup>
+    <col class="col-status">
+    <col style="width:240px">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>상태</th>
+      <th>항목</th>
+      <th>방법</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>미완료</td>
+      <td>실제 AI 응답 품질 테스트</td>
+      <td>개인 이메일로 회원가입 완료 후 직접 체험</td>
+    </tr>
+    <tr>
+      <td>미완료</td>
+      <td>창업자 / 대표자 신원</td>
+      <td>강남구 논현로132길 13 법인 등기 검색, 중소벤처기업부 창업지원포털</td>
+    </tr>
+    <tr>
+      <td>미완료</td>
+      <td>투자사 정보</td>
+      <td>DHP / 기타 VC 포트폴리오 조회</td>
+    </tr>
+    <tr>
+      <td>미완료</td>
+      <td>실사용자 피드백</td>
+      <td>앱스토어 리뷰 크롤링 (com.hmdoctor)</td>
+    </tr>
+    <tr>
+      <td>미완료</td>
+      <td>환자↔의사 시스템 연동 구조</td>
+      <td>chat.hmdoc.kr API와 www.hmdoc.kr 의사 플랫폼 간 데이터 흐름 추가 분석</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="meta" style="margin-top:48px; border-top:1px solid #ddd; padding-top:16px;">
+  분석: AI Consilium &nbsp;|&nbsp; 방법: 브라우저 직접 접속·소스코드 파싱·서버 헤더·앱 스토어 크롤링·whois &nbsp;|&nbsp; 일부 항목(AI 모델·투자) 은 정황 추론이며 확정 사실 아님
+</div>
+
+</body>
+</html>
